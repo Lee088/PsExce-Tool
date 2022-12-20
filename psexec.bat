@@ -1,73 +1,64 @@
 @echo off
-:MENU
 
-ECHO.
-ECHO ...............................................
-ECHO PRESS 1, 2, 3, 4, 5, 6, to select your task, or 7 to EXIT.
-ECHO ...............................................
-ECHO.
-ECHO 1 - Remote CMD
-ECHO 2 - Remote CMD as admin
-ECHO 3 - Run IP ipconfig /all Remote PC
-ECHO 4 - Run gpupdate /force on Remote PC
-ECHO 5 - See Group Policy applied to Remote PC
-ECHO 6 - See The Up Time on a Remote PC
-ECHO 7 - EXIT
-ECHO.
+:menu
+echo.
+echo ...............................................
+echo PRESS 1, 2, 3, 4, 5, 6, to select your task, or 7 to EXIT.
+echo ...............................................
+echo.
+echo 1 - Remote CMD
+echo 2 - Remote CMD as admin
+echo 3 - Run ipconfig /all on Remote PC
+echo 4 - Run gpupdate /force on Remote PC
+echo 5 - See Group Policy applied to Remote PC
+echo 6 - See the uptime on a Remote PC
+echo 7 - EXIT
+echo.
 
-SET /P M=Type 1, 2, 3, 4, 5, 6 or 7 then press ENTER:
-IF %M%==1 GOTO CMD
-IF %M%==2 GOTO CMDAD
-IF %M%==3 GOTO IPCONALL
-IF %M%==4 GOTO GPFORCE
-IF %M%==5 GOTO GPSEE
-IF %M%==6 GOTO UPTIME
-IF %M%==7 GOTO EOF
+set /p choice=Type 1, 2, 3, 4, 5, 6 or 7 then press ENTER:
 
-:CMD
-cd C:\PSTools
-echo "Please Enter PC IP or Name"
-set /p input=""
-psexec \\%input% cmd
-GOTO MENU
+if "%choice%" == "1" goto cmd
+if "%choice%" == "2" goto cmdad
+if "%choice%" == "3" goto ipconfigall
+if "%choice%" == "4" goto gpupdateforce
+if "%choice%" == "5" goto gpsee
+if "%choice%" == "6" goto uptime
+if "%choice%" == "7" goto eof
 
-:CMDAD
-cd C:\PSTools
-echo "Please Enter PC IP or Name"
-set /p ip=""
-echo "Please Enter Your Username"
-set /p un=""
-echo "Please Enter Your Password"
-set /p pw=""
+:cmd
+cd "PATH_TO_PSTOOLS"
+set /p computer=Enter the name or IP of the remote computer: 
+psexec \\%computer% cmd
+goto menu
 
-:: Replace domain with your domain
-psexec \\%ip% -h -u domain\%un%  -p %pw% cmd
-GOTO MENU
+:cmdad
+cd "PATH_TO_PSTOOLS"
+set /p computer=Enter the name or IP of the remote computer: 
+set /p username=Enter your username: 
+set /p password=Enter your password: 
+psexec \\%computer% -h -u wvago\%username% -p %password% cmd
+goto menu
 
-:IPCONALL
-cd C:\PSTools
-echo "Please Enter PC IP or Name"
-set /p ip=""
-psexec \\%ip% ipconfig /all
-GOTO MENU
+:ipconfigall
+cd "PATH_TO_PSTOOLS"
+set /p computer=Enter the name or IP of the remote computer: 
+psexec \\%computer% ipconfig /all
+goto menu
 
-:GPFORCE
-cd C:\PSTools
-echo "Please Enter PC IP or Name"
-set /p ip=""
-psexec \\%ip% gpupdate /force
-GOTO MENU
+:gpupdateforce
+cd "PATH_TO_PSTOOLS"
+set /p computer=Enter the name or IP of the remote computer: 
+psexec \\%computer% gpupdate /force
+goto menu
 
-:GPSEE
-cd C:\PSTools
-echo "Please Enter PC IP or Name"
-set /p ip=""
-psexec \\%ip% gpresult /r /scope:computer
-GOTO MENU
+:gpsee
+cd "PATH_TO_PSTOOLS"
+set /p computer=Enter the name or IP of the remote computer: 
+psexec \\%computer% gpresult /r /scope:computer
+goto menu
 
-:UPTIME
-cd C:\PSTools
-echo "Please Enter PC IP or Name"
-set /p ip=""
-psexec \\%ip% wmic path Win32_OperatingSystem get LastBootUpTime
-GOTO MENU
+:uptime
+cd "PATH_TO_PSTOOLS"
+set /p computer=Enter the name or IP of the remote computer: 
+psexec \\%computer% wmic path Win32_OperatingSystem get LastBootUpTime
+goto menu
